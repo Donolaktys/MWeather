@@ -1,0 +1,16 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="locality">35sp</dimen>
+    <dimen name="temperature">50sp</dimen>
+    <dimen name="measure">30sp</dimen>
+    <dimen name="fragment">37sp</dimen>
+    <dimen name="sizeItemCity">30sp</dimen>
+    <dimen name="sizeItemViewDay">30sp</dimen>
+    <dimen name="sizeItemCityTemp">30sp</dimen>
+</resources>
