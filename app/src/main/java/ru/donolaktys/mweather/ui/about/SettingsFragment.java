@@ -11,12 +11,12 @@ import androidx.fragment.app.Fragment;
 
 import ru.donolaktys.mweather.R;
 
-public class AboutFragment extends Fragment {
+public class SettingsFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_about, container, false);
+        View root = inflater.inflate(R.layout.fragment_settings, container, false);
         TextView view = root.getRootView().findViewById(R.id.text_about);
         view.setText(R.string.about_text);
         return root;

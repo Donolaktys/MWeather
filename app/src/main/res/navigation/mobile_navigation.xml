@@ -36,8 +36,8 @@
         tools:layout="@layout/fragment_favorite" />
 
     <fragment
-        android:id="@+id/nav_about"
-        android:name="ru.donolaktys.mweather.ui.about.AboutFragment"
-        android:label="@string/menu_about"
-        tools:layout="@layout/fragment_about" />
+        android:id="@+id/nav_settings"
+        android:name="ru.donolaktys.mweather.ui.about.SettingsFragment"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
