@@ -149,13 +149,11 @@
 
     </LinearLayout>
 
-
-    <FrameLayout
-        android:id="@+id/mainFragmentView"
+    <include layout="@layout/content_home"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/backGr"></FrameLayout>
+        android:background="@color/backGr"/>
 
     <com.google.android.material.circularreveal.CircularRevealLinearLayout
         android:layout_width="match_parent"
