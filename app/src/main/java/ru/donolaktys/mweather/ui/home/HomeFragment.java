@@ -42,22 +42,34 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        init();
+        init(root);
         addFirstFragment(savedInstanceState);
+
+        oneDayBtn.setOnClickListener(v -> {
+            replaceFragment(oneDayFragment);
+        });
+
+        threeDaysBtn.setOnClickListener(v -> {
+            replaceFragment(threeDaysFragment);
+        });
+
+        weekBtn.setOnClickListener(v -> {
+            replaceFragment(weekFragment);
+        });
 
         return root;
     }
 
-    private void init() {
-        localityChoice = getActivity().findViewById(R.id.localityChoice);
-        temperature = getActivity().findViewById(R.id.temperature);
-        measure = getActivity().findViewById(R.id.measure);
-        oneDayBtn = getActivity().findViewById(R.id.oneDayBtn);
-        threeDaysBtn = getActivity().findViewById(R.id.threeDaysBtn);
-        weekBtn = getActivity().findViewById(R.id.weekBtn);
-        infoLink = getActivity().findViewById(R.id.infoLink);
-        dayHighMeasure = getActivity().findViewById(R.id.dayHighMeasure);
-        dayLowMeasure = getActivity().findViewById(R.id.dayLowMeasure);
+    private void init(View view) {
+        localityChoice = view.findViewById(R.id.localityChoice);
+        temperature = view.findViewById(R.id.temperature);
+        measure = view.findViewById(R.id.measure);
+        oneDayBtn = view.findViewById(R.id.oneDayBtn);
+        threeDaysBtn = view.findViewById(R.id.threeDaysBtn);
+        weekBtn = view.findViewById(R.id.weekBtn);
+        infoLink = view.findViewById(R.id.infoLink);
+        dayHighMeasure = view.findViewById(R.id.dayHighMeasure);
+        dayLowMeasure = view.findViewById(R.id.dayLowMeasure);
         link = getActivity().getString(R.string.link);
         daysFragmentManager = getParentFragmentManager();
         oneDayFragment = new OneDayFragment();
@@ -75,5 +87,11 @@ public class HomeFragment extends Fragment {
             fragmentTransaction.add(R.id.home_fragment, oneDayFragment);
             fragmentTransaction.commit();
         }
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.home_fragment, fragment);
+        fragmentTransaction.commit();
     }
 }
