@@ -5,4 +5,5 @@
     <color name="colorAccent">#383B40</color>
     <color name="backGr">#1F2023</color>
     <color name="textColor">#99ffffff</color>
+    <color name="hintColor">#FFE0F2F1</color>
 </resources>

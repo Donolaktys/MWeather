@@ -1,25 +1,39 @@
 package ru.donolaktys.mweather.ui.home;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Objects;
+
+import ru.donolaktys.mweather.BuildConfig;
+import ru.donolaktys.mweather.Constants;
 import ru.donolaktys.mweather.R;
+import ru.donolaktys.mweather.RequestBuilder;
+import ru.donolaktys.mweather.data.WeatherRequest;
 import ru.donolaktys.mweather.ui.home.day_view.OneDayFragment;
 import ru.donolaktys.mweather.ui.home.day_view.ThreeDaysFragment;
 import ru.donolaktys.mweather.ui.home.day_view.WeekFragment;
 
-public class HomeFragment extends Fragment {
-    private TextView localityChoice;
+public class HomeFragment extends Fragment implements Constants {
+    private TextInputLayout localityChoiceLayout;
+    private TextInputEditText localityChoice;
     private TextView temperature;
     private TextView measure;
     private TextView infoLink;
@@ -57,11 +71,37 @@ public class HomeFragment extends Fragment {
             replaceFragment(weekFragment);
         });
 
+        localityChoice.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (KeyEvent.ACTION_DOWN == event.getAction()) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_ENTER:
+                            uriBuild(Objects.requireNonNull(localityChoice.getText()).toString());
+                            initBuilder(getRequestUri());
+                            putSearchHistory(city, temperature.getText().toString());
+                            System.out.println("Нажат интер");
+                            hideKeyboardFrom(requireActivity(), v);
+                            break;
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
         return root;
     }
 
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     private void init(View view) {
-        localityChoice = view.findViewById(R.id.localityChoice);
+        localityChoiceLayout = view.findViewById(R.id.localityChoiceLayout);
+        localityChoice = localityChoiceLayout.findViewById(R.id.localityChoice);
+        localityChoiceLayout.setHint(getString(R.string.hintLocation));
         temperature = view.findViewById(R.id.temperature);
         measure = view.findViewById(R.id.measure);
         oneDayBtn = view.findViewById(R.id.oneDayBtn);
@@ -94,4 +134,30 @@ public class HomeFragment extends Fragment {
         fragmentTransaction.replace(R.id.home_fragment, fragment);
         fragmentTransaction.commit();
     }
+
+    private void uriBuild(String city) {
+        String requestUri = WEATHER_URL + city;
+        if (isFahrenheit()) {
+            requestUri += "&units=imperial";
+        } else {
+            requestUri += "&units=metric";
+        }
+        requestUri += "&APPID=" + BuildConfig.WEATHER_API_KEY;
+        setRequestUri(requestUri);
+    }
+
+    private void initBuilder(String uri) {
+        final RequestBuilder requestBuilder = new RequestBuilder(new WeatherRequest(), uri);
+        displayWeather(requestBuilder.getWeatherRequest());
+    }
+
+    private void displayWeather(WeatherRequest weatherRequest) {
+        try {
+            temperature.setText(String.format("%d", (int) weatherRequest.getMain().getTemp()));
+        } catch (NullPointerException e) {
+            localityChoice.setText("");
+            Toast toast = Toast.makeText(getContext(),
+                    "Не верный запрос!!!", Toast.LENGTH_LONG);
+            toast.show();
+        }
 }

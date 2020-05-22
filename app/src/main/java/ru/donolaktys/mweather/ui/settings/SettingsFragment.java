@@ -17,8 +17,7 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
-        TextView view = root.getRootView().findViewById(R.id.text_settings);
-        view.setText(R.string.settings_text);
+
         return root;
     }
 }

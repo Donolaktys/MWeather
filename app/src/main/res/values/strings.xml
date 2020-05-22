@@ -24,7 +24,7 @@
     <string name="oneDay">1 Day</string>
     <string name="threeDays">3 Days</string>
     <string name="week">Week</string>
-    <string name="hintLocation">Enter location</string>
+    <string name="hintLocation">Choose location</string>
     <string name="nightModeSwitch">Night Mode</string>
     <string name="cBoxPressure">Atmosphere pressure</string>
     <string name="cBoxWindSpeed">Wind Speed</string>
