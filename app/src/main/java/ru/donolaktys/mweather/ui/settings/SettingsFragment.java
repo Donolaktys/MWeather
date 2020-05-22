@@ -1,4 +1,4 @@
-package ru.donolaktys.mweather.ui.about;
+package ru.donolaktys.mweather.ui.settings;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,8 +17,8 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
-        TextView view = root.getRootView().findViewById(R.id.text_about);
-        view.setText(R.string.about_text);
+        TextView view = root.getRootView().findViewById(R.id.text_settings);
+        view.setText(R.string.settings_text);
         return root;
     }
 }
