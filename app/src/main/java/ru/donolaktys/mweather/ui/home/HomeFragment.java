@@ -26,6 +26,7 @@ import ru.donolaktys.mweather.BuildConfig;
 import ru.donolaktys.mweather.Constants;
 import ru.donolaktys.mweather.R;
 import ru.donolaktys.mweather.RequestBuilder;
+import ru.donolaktys.mweather.UriBuilder;
 import ru.donolaktys.mweather.data.WeatherRequest;
 import ru.donolaktys.mweather.ui.home.day_view.OneDayFragment;
 import ru.donolaktys.mweather.ui.home.day_view.ThreeDaysFragment;
@@ -77,10 +78,9 @@ public class HomeFragment extends Fragment implements Constants {
                 if (KeyEvent.ACTION_DOWN == event.getAction()) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_ENTER:
-                            uriBuild(Objects.requireNonNull(localityChoice.getText()).toString());
-                            initBuilder(getRequestUri());
-                            putSearchHistory(city, temperature.getText().toString());
-                            System.out.println("Нажат интер");
+                            UriBuilder uriBuilder = new UriBuilder(Objects.requireNonNull(localityChoice.getText()).toString());
+                            initBuilder(uriBuilder.getRequestUri());
+//                            putSearchHistory(city, temperature.getText().toString());
                             hideKeyboardFrom(requireActivity(), v);
                             break;
                     }
@@ -93,9 +93,9 @@ public class HomeFragment extends Fragment implements Constants {
         return root;
     }
 
-    public static void hideKeyboardFrom(Context context, View view) {
+    public void hideKeyboardFrom(Context context, View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        Objects.requireNonNull(imm).hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void init(View view) {
@@ -115,9 +115,6 @@ public class HomeFragment extends Fragment implements Constants {
         oneDayFragment = new OneDayFragment();
         threeDaysFragment = new ThreeDaysFragment();
         weekFragment = new WeekFragment();
-//        measure.setText(getMeasure());
-//        dayHighMeasure.setText(getMeasure());
-//        dayLowMeasure.setText(getMeasure());
     }
 
     private void addFirstFragment(Bundle savedInstanceState) {
@@ -135,17 +132,6 @@ public class HomeFragment extends Fragment implements Constants {
         fragmentTransaction.commit();
     }
 
-    private void uriBuild(String city) {
-        String requestUri = WEATHER_URL + city;
-        if (isFahrenheit()) {
-            requestUri += "&units=imperial";
-        } else {
-            requestUri += "&units=metric";
-        }
-        requestUri += "&APPID=" + BuildConfig.WEATHER_API_KEY;
-        setRequestUri(requestUri);
-    }
-
     private void initBuilder(String uri) {
         final RequestBuilder requestBuilder = new RequestBuilder(new WeatherRequest(), uri);
         displayWeather(requestBuilder.getWeatherRequest());
@@ -160,4 +146,5 @@ public class HomeFragment extends Fragment implements Constants {
                     "Не верный запрос!!!", Toast.LENGTH_LONG);
             toast.show();
         }
+    }
 }
