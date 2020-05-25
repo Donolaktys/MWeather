@@ -41,4 +41,6 @@
     <string name="windSpeedSnackOFF">Wind speed display off</string>
     <string name="pressureSnackOFF">Pressure display off</string>
     <string name="cBoxFahrenheit">Display Fahrenheit</string>
+    <string name="info_exclamation">About us</string>
+    <string name="info_button">ЯсноПонятно</string>
 </resources>
