@@ -1,26 +1,25 @@
 package ru.donolaktys.mweather;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class MainActivity extends AppCompatActivity implements Constants{
+import ru.donolaktys.mweather.interfaces.Constants;
+
+public class MainActivity extends Settings implements Constants {
 
     private AppBarConfiguration mAppBarConfiguration;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -35,8 +34,6 @@ public class MainActivity extends AppCompatActivity implements Constants{
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-        setTheme();
     }
 
     @Override
@@ -51,26 +48,5 @@ public class MainActivity extends AppCompatActivity implements Constants{
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    private void setTheme() {
-        if (isDarkTheme()) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-    }
-
-    public boolean isDarkTheme() {
-        SharedPreferences sharedPreferences = getSharedPreferences(NAME_PREFERENCE_THEME, MODE_PRIVATE);
-
-        return sharedPreferences.getBoolean(IS_DARK_THEME, false);
-    }
-
-    public void setDarkTheme(boolean isDarkTheme) {
-        SharedPreferences sharedPreferences = getSharedPreferences(NAME_PREFERENCE_THEME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(IS_DARK_THEME, isDarkTheme);
-        editor.apply();
     }
 }

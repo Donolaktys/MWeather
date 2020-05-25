@@ -1,6 +1,8 @@
 package ru.donolaktys.mweather;
 
-public class UriBuilder implements Constants{
+import ru.donolaktys.mweather.interfaces.Constants;
+
+public class UriBuilder implements Constants {
     String requestUri;
 
     public UriBuilder(String city) {

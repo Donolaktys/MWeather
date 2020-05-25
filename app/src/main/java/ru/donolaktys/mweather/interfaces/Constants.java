@@ -1,4 +1,4 @@
-package ru.donolaktys.mweather;
+package ru.donolaktys.mweather.interfaces;
 
 public interface Constants {
     public final String CITY = "ru.geekbrains.meteoapp.city";

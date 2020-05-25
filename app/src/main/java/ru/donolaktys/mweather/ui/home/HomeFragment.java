@@ -22,8 +22,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
-import ru.donolaktys.mweather.BuildConfig;
-import ru.donolaktys.mweather.Constants;
+import ru.donolaktys.mweather.interfaces.Constants;
 import ru.donolaktys.mweather.R;
 import ru.donolaktys.mweather.RequestBuilder;
 import ru.donolaktys.mweather.UriBuilder;
@@ -37,7 +36,6 @@ public class HomeFragment extends Fragment implements Constants {
     private TextInputEditText localityChoice;
     private TextView temperature;
     private TextView measure;
-    private TextView infoLink;
     private TextView dayHighMeasure;
     private TextView dayLowMeasure;
 
@@ -80,7 +78,6 @@ public class HomeFragment extends Fragment implements Constants {
                         case KeyEvent.KEYCODE_ENTER:
                             UriBuilder uriBuilder = new UriBuilder(Objects.requireNonNull(localityChoice.getText()).toString());
                             initBuilder(uriBuilder.getRequestUri());
-//                            putSearchHistory(city, temperature.getText().toString());
                             hideKeyboardFrom(requireActivity(), v);
                             break;
                     }
@@ -107,7 +104,6 @@ public class HomeFragment extends Fragment implements Constants {
         oneDayBtn = view.findViewById(R.id.oneDayBtn);
         threeDaysBtn = view.findViewById(R.id.threeDaysBtn);
         weekBtn = view.findViewById(R.id.weekBtn);
-        infoLink = view.findViewById(R.id.infoLink);
         dayHighMeasure = view.findViewById(R.id.dayHighMeasure);
         dayLowMeasure = view.findViewById(R.id.dayLowMeasure);
         link = getActivity().getString(R.string.link);

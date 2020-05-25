@@ -10,12 +10,13 @@ import androidx.fragment.app.Fragment;
 
 import ru.donolaktys.mweather.R;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment{
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
+
 
         return root;
     }

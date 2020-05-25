@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.net.ssl.HttpsURLConnection;
 
 import ru.donolaktys.mweather.data.WeatherRequest;
+import ru.donolaktys.mweather.interfaces.Constants;
 
 public class RequestBuilder implements Constants {
     private WeatherRequest weatherRequest;
