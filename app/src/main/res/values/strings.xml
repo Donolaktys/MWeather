@@ -15,7 +15,7 @@
 
     <string name="favorite_text">Здесь будет избранное</string>
     <string name="settings_text">Здесь будут настройки</string>
-    <string name="about_text" >Приложение создано \n
+    <string name="about_text" > Приложение создано \n
                                 в рамках обучения на\n
                                 факультете Android разработки\n
                                 в GeekBrains University</string>
@@ -41,4 +41,10 @@
     <string name="windSpeedSnackOFF">Wind speed display off</string>
     <string name="pressureSnackOFF">Pressure display off</string>
     <string name="cBoxFahrenheit">Display Fahrenheit</string>
+
+    <string name="info_exclamation">About us</string>
+    <string name="info_button">ЯсноПонятно</string>
+    <string name="error_exclamation">ОШИБКА!</string>
+    <string name="error_msg">Не верный запрос!!!</string>
+    <string name="err_button">OK</string>
 </resources>
