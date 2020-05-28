@@ -2,6 +2,7 @@ package ru.donolaktys.mweather.ui.home;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -138,9 +140,18 @@ public class HomeFragment extends Fragment implements Constants {
             temperature.setText(String.format("%d", (int) weatherRequest.getMain().getTemp()));
         } catch (NullPointerException e) {
             localityChoice.setText("");
-            Toast toast = Toast.makeText(getContext(),
-                    "Не верный запрос!!!", Toast.LENGTH_LONG);
-            toast.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.error_exclamation)
+                    .setMessage(R.string.error_msg)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.err_button,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+            AlertDialog alert = builder.create();
+            alert.show();
         }
     }
 }

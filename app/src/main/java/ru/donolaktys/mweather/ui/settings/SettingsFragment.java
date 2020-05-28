@@ -17,6 +17,16 @@ public class SettingsFragment extends Fragment{
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
+//        SettingsInterface settings = SettingsHandler.getSettings();
+//        SwitchCompat switchDarkTheme = root.findViewById(R.id.nightModeSwitch);
+//        switchDarkTheme.setChecked(isDarkTheme());
+//        switchDarkTheme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                setDarkTheme(isChecked);
+//                recreate();
+//            }
+//        });
 
         return root;
     }
