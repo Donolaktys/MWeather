@@ -2,7 +2,6 @@ package ru.donolaktys.mweather.ui.home;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -21,14 +19,19 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.FileNotFoundException;
+import java.util.Locale;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import ru.donolaktys.mweather.BuildConfig;
 import ru.donolaktys.mweather.interfaces.Constants;
 import ru.donolaktys.mweather.R;
-import ru.donolaktys.mweather.RequestBuilder;
-import ru.donolaktys.mweather.UriBuilder;
 import ru.donolaktys.mweather.data.WeatherRequest;
+import ru.donolaktys.mweather.interfaces.IRequestWeather;
 import ru.donolaktys.mweather.ui.home.day_view.OneDayFragment;
 import ru.donolaktys.mweather.ui.home.day_view.ThreeDaysFragment;
 import ru.donolaktys.mweather.ui.home.day_view.WeekFragment;
@@ -52,12 +55,16 @@ public class HomeFragment extends Fragment implements Constants {
 
     private String link;
 
+    private IRequestWeather iRequestWeather;
+    private Retrofit retrofit;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         init(root);
+        initRetrofit();
         addFirstFragment(savedInstanceState);
 
         oneDayBtn.setOnClickListener(v -> {
@@ -78,8 +85,9 @@ public class HomeFragment extends Fragment implements Constants {
                 if (KeyEvent.ACTION_DOWN == event.getAction()) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_ENTER:
-                            UriBuilder uriBuilder = new UriBuilder(Objects.requireNonNull(localityChoice.getText()).toString());
-                            initBuilder(uriBuilder.getRequestUri());
+                            requestRetrofit(Objects.requireNonNull(localityChoice.getText()).toString());
+//                            UriBuilder uriBuilder = new UriBuilder(Objects.requireNonNull(localityChoice.getText()).toString());
+//                            initBuilder(uriBuilder.getRequestUri());
                             hideKeyboardFrom(requireActivity(), v);
                             break;
                     }
@@ -88,8 +96,32 @@ public class HomeFragment extends Fragment implements Constants {
                 return false;
             }
         });
-
         return root;
+    }
+
+    private void requestRetrofit(String city) {
+        // metric указано явно т.к еще не реализованы настройки. Будет браться из настроек.
+        iRequestWeather.loadWeather(city, "metric", BuildConfig.WEATHER_API_KEY)
+                .enqueue(new Callback<WeatherRequest>() {
+                    @Override
+                    public void onResponse(Call<WeatherRequest> call, Response<WeatherRequest> response) {
+                        float temp = response.body().getMain().getTemp();
+                        temperature.setText(String.format(Locale.getDefault(), "%d", (int) temp));
+                    }
+
+                    @Override
+                    public void onFailure(Call<WeatherRequest> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    private void initRetrofit() {
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        iRequestWeather = retrofit.create(IRequestWeather.class);
     }
 
     public void hideKeyboardFrom(Context context, View view) {
@@ -130,27 +162,27 @@ public class HomeFragment extends Fragment implements Constants {
         fragmentTransaction.commit();
     }
 
-    private void initBuilder(String uri) {
-        final RequestBuilder requestBuilder = new RequestBuilder(new RequestBuilder.RequestListener() {
-            @Override
-            public void onFinish(String param) {
-                temperature.setText(param);
-                if (param.equals("")) {
-                    localityChoice.setText("");
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle(R.string.error_exclamation)
-                            .setMessage(R.string.error_msg)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.err_button,
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }
-            }
-        }, new WeatherRequest(), uri);
-    }
+//    private void initBuilder(String uri) {
+//        final RequestBuilder requestBuilder = new RequestBuilder(new RequestBuilder.RequestListener() {
+//            @Override
+//            public void onFinish(String param) {
+//                temperature.setText(param);
+//                if (param.equals("")) {
+//                    localityChoice.setText("");
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//                    builder.setTitle(R.string.error_exclamation)
+//                            .setMessage(R.string.error_msg)
+//                            .setCancelable(false)
+//                            .setPositiveButton(R.string.err_button,
+//                                    new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog, int id) {
+//                                            dialog.dismiss();
+//                                        }
+//                                    });
+//                    AlertDialog alert = builder.create();
+//                    alert.show();
+//                }
+//            }
+//        }, new WeatherRequest(), uri);
+//    }
 }
