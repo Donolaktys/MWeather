@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.stream.Collectors;
@@ -45,16 +46,25 @@ public class RequestBuilder implements Constants {
                         urlConnection = (HttpsURLConnection) url.openConnection();
                         urlConnection.setRequestMethod("GET");
                         urlConnection.setReadTimeout(10000);
-                        BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                        String result = getLines(in);
-                        Gson gson = new Gson();
-                        weatherRequest = gson.fromJson(result, WeatherRequest.class);
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                requestListener.onFinish(getTemperature(weatherRequest));
-                            }
-                        });
+                        try {
+                            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                            String result = getLines(in);
+                            Gson gson = new Gson();
+                            weatherRequest = gson.fromJson(result, WeatherRequest.class);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    requestListener.onFinish(getTemperature(weatherRequest));
+                                }
+                            });
+                        } catch (FileNotFoundException e) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    requestListener.onFinish(getTemperature(null));
+                                }
+                            });
+                        }
                     }catch(Exception e){
                         Log.e(TAG, "Fail Connection", e);
                         e.printStackTrace();
@@ -76,10 +86,14 @@ public class RequestBuilder implements Constants {
 
     private String getTemperature(WeatherRequest weatherRequest) {
         String temperature;
-        try {
-            temperature = (String.format("%d", (int) weatherRequest.getMain().getTemp()));
-        } catch (NullPointerException e) {
+        if (weatherRequest == null) {
             temperature = "";
+        } else {
+            try {
+                temperature = (String.format("%d", (int) weatherRequest.getMain().getTemp()));
+            } catch (NullPointerException e) {
+                temperature = "";
+            }
         }
         return temperature;
     }

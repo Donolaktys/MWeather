@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.FileNotFoundException;
 import java.util.Objects;
 
 import ru.donolaktys.mweather.interfaces.Constants;
@@ -133,8 +134,9 @@ public class HomeFragment extends Fragment implements Constants {
         final RequestBuilder requestBuilder = new RequestBuilder(new RequestBuilder.RequestListener() {
             @Override
             public void onFinish(String param) {
-                if (param == null) {
-                    temperature.setText("");
+                temperature.setText(param);
+                if (param.equals("")) {
+                    localityChoice.setText("");
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle(R.string.error_exclamation)
                             .setMessage(R.string.error_msg)
@@ -147,11 +149,8 @@ public class HomeFragment extends Fragment implements Constants {
                                     });
                     AlertDialog alert = builder.create();
                     alert.show();
-                } else {
-                    temperature.setText(param);
                 }
             }
         }, new WeatherRequest(), uri);
     }
-
 }
