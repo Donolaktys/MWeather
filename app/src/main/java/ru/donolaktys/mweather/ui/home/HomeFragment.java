@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -131,27 +130,28 @@ public class HomeFragment extends Fragment implements Constants {
     }
 
     private void initBuilder(String uri) {
-        final RequestBuilder requestBuilder = new RequestBuilder(new WeatherRequest(), uri);
-        displayWeather(requestBuilder.getWeatherRequest());
+        final RequestBuilder requestBuilder = new RequestBuilder(new RequestBuilder.RequestListener() {
+            @Override
+            public void onFinish(String param) {
+                if (param == null) {
+                    temperature.setText("");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle(R.string.error_exclamation)
+                            .setMessage(R.string.error_msg)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.err_button,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                } else {
+                    temperature.setText(param);
+                }
+            }
+        }, new WeatherRequest(), uri);
     }
 
-    private void displayWeather(WeatherRequest weatherRequest) {
-        try {
-            temperature.setText(String.format("%d", (int) weatherRequest.getMain().getTemp()));
-        } catch (NullPointerException e) {
-            localityChoice.setText("");
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle(R.string.error_exclamation)
-                    .setMessage(R.string.error_msg)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.err_button,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                }
-                            });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
-    }
 }
