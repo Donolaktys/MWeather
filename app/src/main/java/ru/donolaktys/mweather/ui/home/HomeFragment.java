@@ -2,6 +2,7 @@ package ru.donolaktys.mweather.ui.home;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -25,6 +27,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +36,8 @@ import retrofit2.Retrofit;
 import ru.donolaktys.mweather.BuildConfig;
 import ru.donolaktys.mweather.MWeather;
 import ru.donolaktys.mweather.AlertSender;
+import ru.donolaktys.mweather.OpenWeatherImage;
+import ru.donolaktys.mweather.data.Weather;
 import ru.donolaktys.mweather.interfaces.Constants;
 import ru.donolaktys.mweather.R;
 import ru.donolaktys.mweather.data.WeatherRequest;
@@ -40,6 +45,8 @@ import ru.donolaktys.mweather.interfaces.IRequestWeather;
 import ru.donolaktys.mweather.ui.home.day_view.OneDayFragment;
 import ru.donolaktys.mweather.ui.home.day_view.ThreeDaysFragment;
 import ru.donolaktys.mweather.ui.home.day_view.WeekFragment;
+
+import com.squareup.picasso.Picasso;
 
 public class HomeFragment extends Fragment implements Constants {
     private TextInputLayout localityChoiceLayout;
@@ -57,6 +64,7 @@ public class HomeFragment extends Fragment implements Constants {
     private Button oneDayBtn;
     private Button threeDaysBtn;
     private Button weekBtn;
+    private AppCompatImageView mainConditions;
 
     private String link;
 
@@ -90,7 +98,7 @@ public class HomeFragment extends Fragment implements Constants {
                 if (KeyEvent.ACTION_DOWN == event.getAction()) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_ENTER:
-                            requestRetrofit(getContext(), Objects.requireNonNull(localityChoice.getText()).toString());
+                            requestRetrofit(v.getContext().getApplicationContext(), Objects.requireNonNull(localityChoice.getText()).toString());
                             hideKeyboardFrom(requireActivity(), v);
                             break;
                     }
@@ -111,6 +119,10 @@ public class HomeFragment extends Fragment implements Constants {
                         if (response.body() !=null && response.isSuccessful()) {
                             float temp = response.body().getMain().getTemp();
                             temperature.setText(String.format(Locale.getDefault(), "%d", (int) temp));
+                            Weather[] weather = response.body().getWeather();
+                            Picasso.get()
+                                    .load(buildImageUrl(weather[0].getIcon()))
+                                    .into(mainConditions);
                         }
                         if (!response.isSuccessful() && response.errorBody() != null) {
                             try {
@@ -135,6 +147,11 @@ public class HomeFragment extends Fragment implements Constants {
                 });
     }
 
+    private String buildImageUrl(String cod) {
+        String url = new OpenWeatherImage(cod).build();
+        return url;
+    }
+
     private void initRetrofit() {
         retrofit = MWeather.getRetrofitInstance();
         iRequestWeather = retrofit.create(IRequestWeather.class);
@@ -146,6 +163,7 @@ public class HomeFragment extends Fragment implements Constants {
     }
 
     private void init(View view) {
+        mainConditions = view.findViewById(R.id.mainConditions);
         localityChoiceLayout = view.findViewById(R.id.localityChoiceLayout);
         localityChoice = localityChoiceLayout.findViewById(R.id.localityChoice);
         localityChoiceLayout.setHint(getString(R.string.hintLocation));
