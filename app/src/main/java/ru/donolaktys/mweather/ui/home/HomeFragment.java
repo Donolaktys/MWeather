@@ -2,7 +2,6 @@ package ru.donolaktys.mweather.ui.home;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -32,10 +30,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import ru.donolaktys.mweather.BuildConfig;
 import ru.donolaktys.mweather.MWeather;
-import ru.donolaktys.mweather.data.AlertSender;
+import ru.donolaktys.mweather.AlertSender;
 import ru.donolaktys.mweather.interfaces.Constants;
 import ru.donolaktys.mweather.R;
 import ru.donolaktys.mweather.data.WeatherRequest;

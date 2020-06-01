@@ -1,4 +1,4 @@
-package ru.donolaktys.mweather.data;
+package ru.donolaktys.mweather;
 
 import android.content.Context;
 import android.content.DialogInterface;
