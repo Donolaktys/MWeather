@@ -2,6 +2,7 @@ package ru.donolaktys.mweather.ui.home;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,6 +21,10 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -28,6 +34,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.donolaktys.mweather.BuildConfig;
+import ru.donolaktys.mweather.data.AlertSender;
 import ru.donolaktys.mweather.interfaces.Constants;
 import ru.donolaktys.mweather.R;
 import ru.donolaktys.mweather.data.WeatherRequest;
@@ -85,9 +92,7 @@ public class HomeFragment extends Fragment implements Constants {
                 if (KeyEvent.ACTION_DOWN == event.getAction()) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_ENTER:
-                            requestRetrofit(Objects.requireNonNull(localityChoice.getText()).toString());
-//                            UriBuilder uriBuilder = new UriBuilder(Objects.requireNonNull(localityChoice.getText()).toString());
-//                            initBuilder(uriBuilder.getRequestUri());
+                            requestRetrofit(getContext(), Objects.requireNonNull(localityChoice.getText()).toString());
                             hideKeyboardFrom(requireActivity(), v);
                             break;
                     }
@@ -99,19 +104,35 @@ public class HomeFragment extends Fragment implements Constants {
         return root;
     }
 
-    private void requestRetrofit(String city) {
+    private void requestRetrofit(Context context, String city) {
         // metric указано явно т.к еще не реализованы настройки. Будет браться из настроек.
         iRequestWeather.loadWeather(city, "metric", BuildConfig.WEATHER_API_KEY)
                 .enqueue(new Callback<WeatherRequest>() {
                     @Override
                     public void onResponse(Call<WeatherRequest> call, Response<WeatherRequest> response) {
-                        float temp = response.body().getMain().getTemp();
-                        temperature.setText(String.format(Locale.getDefault(), "%d", (int) temp));
+                        if (response.body() !=null && response.isSuccessful()) {
+                            float temp = response.body().getMain().getTemp();
+                            temperature.setText(String.format(Locale.getDefault(), "%d", (int) temp));
+                        }
+                        if (!response.isSuccessful() && response.errorBody() != null) {
+                            try {
+                                JSONObject jsonError = new JSONObject(response.errorBody().string());
+                                String errorID = jsonError.getString("cod");
+                                String error = jsonError.getString("message");
+                                localityChoice.getText().clear();
+                                new AlertSender(context.getApplicationContext(), error, errorID).send();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<WeatherRequest> call, Throwable t) {
-
+                        localityChoice.getText().clear();
+                        new AlertSender(context.getApplicationContext(), getString(R.string.internet_error)).send();
                     }
                 });
     }
@@ -161,28 +182,4 @@ public class HomeFragment extends Fragment implements Constants {
         fragmentTransaction.replace(R.id.home_fragment, fragment);
         fragmentTransaction.commit();
     }
-
-//    private void initBuilder(String uri) {
-//        final RequestBuilder requestBuilder = new RequestBuilder(new RequestBuilder.RequestListener() {
-//            @Override
-//            public void onFinish(String param) {
-//                temperature.setText(param);
-//                if (param.equals("")) {
-//                    localityChoice.setText("");
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//                    builder.setTitle(R.string.error_exclamation)
-//                            .setMessage(R.string.error_msg)
-//                            .setCancelable(false)
-//                            .setPositiveButton(R.string.err_button,
-//                                    new DialogInterface.OnClickListener() {
-//                                        public void onClick(DialogInterface dialog, int id) {
-//                                            dialog.dismiss();
-//                                        }
-//                                    });
-//                    AlertDialog alert = builder.create();
-//                    alert.show();
-//                }
-//            }
-//        }, new WeatherRequest(), uri);
-//    }
 }
