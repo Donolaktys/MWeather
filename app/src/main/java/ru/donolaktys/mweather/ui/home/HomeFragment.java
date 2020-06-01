@@ -34,6 +34,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.donolaktys.mweather.BuildConfig;
+import ru.donolaktys.mweather.MWeather;
 import ru.donolaktys.mweather.data.AlertSender;
 import ru.donolaktys.mweather.interfaces.Constants;
 import ru.donolaktys.mweather.R;
@@ -138,10 +139,7 @@ public class HomeFragment extends Fragment implements Constants {
     }
 
     private void initRetrofit() {
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        retrofit = MWeather.getRetrofitInstance();
         iRequestWeather = retrofit.create(IRequestWeather.class);
     }
 
