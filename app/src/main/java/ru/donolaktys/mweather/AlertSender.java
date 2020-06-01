@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
 
-import ru.donolaktys.mweather.R;
-
 public class AlertSender {
     String errorID;
     String error;
@@ -22,13 +20,13 @@ public class AlertSender {
     public AlertSender(Context context, String error) {
         this.context = context;
         this.error = error;
-        this.errorID = "Unknown error";
+        this.errorID = "";
         send();
     }
 
     public void send() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.error_exclamation + ":" + errorID)
+        builder.setTitle("Error code :" + errorID)
                 .setMessage(error)
                 .setCancelable(false)
                 .setPositiveButton(R.string.err_button,
@@ -37,6 +35,8 @@ public class AlertSender {
                                 dialog.dismiss();
                             }
                         });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }

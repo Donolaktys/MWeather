@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment implements Constants {
                 if (KeyEvent.ACTION_DOWN == event.getAction()) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_ENTER:
-                            requestRetrofit(v.getContext().getApplicationContext(), Objects.requireNonNull(localityChoice.getText()).toString());
+                            requestRetrofit(v.getContext(), Objects.requireNonNull(localityChoice.getText()).toString());
                             hideKeyboardFrom(requireActivity(), v);
                             break;
                     }
@@ -130,7 +130,7 @@ public class HomeFragment extends Fragment implements Constants {
                                 String errorID = jsonError.getString("cod");
                                 String error = jsonError.getString("message");
                                 localityChoice.getText().clear();
-                                new AlertSender(context.getApplicationContext(), error, errorID).send();
+                                new AlertSender(context, error, errorID).send();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             } catch (IOException e) {
@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment implements Constants {
                     @Override
                     public void onFailure(Call<WeatherRequest> call, Throwable t) {
                         localityChoice.getText().clear();
-                        new AlertSender(context.getApplicationContext(), getString(R.string.internet_error)).send();
+                        new AlertSender(context, (String) getText(R.string.internet_error)).send();
                     }
                 });
     }
