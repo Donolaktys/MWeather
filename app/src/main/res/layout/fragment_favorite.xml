@@ -7,18 +7,18 @@
     android:orientation="vertical"
     tools:context=".ui.favorite.FavoriteFragment">
 
-        <include
-                layout="@layout/recycler_favorite"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/backGr" />
+    <include
+        layout="@layout/content_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/backGr" />
 
-        <include
-            layout="@layout/recycler_history"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/backGr" />
+    <include
+        layout="@layout/content_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/backGr" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
