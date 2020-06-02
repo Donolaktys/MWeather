@@ -37,6 +37,7 @@ import ru.donolaktys.mweather.BuildConfig;
 import ru.donolaktys.mweather.MWeather;
 import ru.donolaktys.mweather.AlertSender;
 import ru.donolaktys.mweather.OpenWeatherImage;
+import ru.donolaktys.mweather.data.SearchHistory;
 import ru.donolaktys.mweather.data.Weather;
 import ru.donolaktys.mweather.interfaces.Constants;
 import ru.donolaktys.mweather.R;
@@ -100,6 +101,7 @@ public class HomeFragment extends Fragment implements Constants {
                         case KeyEvent.KEYCODE_ENTER:
                             requestRetrofit(v.getContext(), Objects.requireNonNull(localityChoice.getText()).toString());
                             hideKeyboardFrom(requireActivity(), v);
+                            SearchHistory.getSearchHistory().add(Objects.requireNonNull(localityChoice.getText()).toString());
                             break;
                     }
                     return true;

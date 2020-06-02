@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import ru.donolaktys.mweather.R;
+import ru.donolaktys.mweather.data.FavoriteCity;
 
 public class FavoriteFragment extends Fragment {
 
@@ -17,8 +18,10 @@ public class FavoriteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_favorite, container, false);
-        TextView view = root.getRootView().findViewById(R.id.text_favorite);
-        view.setText(R.string.favorite_text);
+        if (FavoriteCity.getFavoriteCity().size() == 0) {
+            View viewFavorite = root.findViewById(R.id.fragmentViewFavorite);
+            viewFavorite.setVisibility(View.GONE);
+        }
         return root;
     }
 }
