@@ -18,10 +18,6 @@ public class FavoriteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_favorite, container, false);
-        if (FavoriteCity.getFavoriteCity().size() == 0) {
-            View viewFavorite = root.findViewById(R.id.fragmentViewFavorite);
-            viewFavorite.setVisibility(View.GONE);
-        }
         return root;
     }
 }
