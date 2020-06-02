@@ -112,14 +112,15 @@ public class HomeFragment extends Fragment implements Constants {
 
     private void requestRetrofit(Context context, String city) {
         // metric указано явно т.к еще не реализованы настройки. Будет браться из настроек.
+
         iRequestWeather.loadWeather(city, "metric", BuildConfig.WEATHER_API_KEY)
                 .enqueue(new Callback<WeatherRequest>() {
                     @Override
                     public void onResponse(Call<WeatherRequest> call, Response<WeatherRequest> response) {
                         if (response.body() !=null && response.isSuccessful()) {
                             float temp = response.body().getMain().getTemp();
-                            temperature.setText(String.format(Locale.getDefault(), "%d", (int) temp));
                             Weather[] weather = response.body().getWeather();
+                            temperature.setText(String.format(Locale.getDefault(), "%d", (int) temp));
                             Picasso.get()
                                     .load(buildImageUrl(weather[0].getIcon()))
                                     .into(mainConditions);
@@ -147,8 +148,8 @@ public class HomeFragment extends Fragment implements Constants {
                 });
     }
 
-    private String buildImageUrl(String cod) {
-        String url = new OpenWeatherImage(cod).build();
+    private String buildImageUrl(String image) {
+        String url = new OpenWeatherImage(image).build();
         return url;
     }
 
