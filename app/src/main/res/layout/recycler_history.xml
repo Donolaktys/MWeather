@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/backGr"
-    tools:showIn="@layout/fragment_favorite"
+    tools:showIn="@layout/content_history"
     tools:listitem="@layout/item_history"
     tools:context=".ui.favorite.view.HistoryListFragment">
 

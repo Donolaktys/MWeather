@@ -6,8 +6,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
+import ru.donolaktys.mweather.OpenWeatherImage;
 import ru.donolaktys.mweather.R;
 import ru.donolaktys.mweather.data.FavoriteCity;
 
@@ -36,13 +40,24 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
     class FavoriteHolder extends RecyclerView.ViewHolder {
 
         private TextView textCityFavorite;
+        private TextView textTempFavorite;
+        private AppCompatImageView imageConditionsFavorite;
+
+
         public FavoriteHolder(@NonNull View itemView) {
             super(itemView);
             textCityFavorite = itemView.findViewById(R.id.textCityFavorite);
+            imageConditionsFavorite = itemView.findViewById(R.id.imageConditionsFavorite);
+            textTempFavorite = itemView.findViewById(R.id.textTempFavorite);
         }
 
         public void build(int position) {
-            textCityFavorite.setText(FavoriteCity.getFavoriteCity().get(position).get(0));
+            String[] list = FavoriteCity.getFavoriteCity().get(position);
+            textCityFavorite.setText(list[0]);
+            Picasso.get()
+                    .load(new OpenWeatherImage(list[1]).build())
+                    .into(imageConditionsFavorite);
+            textTempFavorite.setText(list[2]);
         }
     }
 }
