@@ -43,8 +43,8 @@
     <string name="cBoxFahrenheit">Display Fahrenheit</string>
 
     <string name="info_exclamation">About us</string>
-    <string name="info_button">ЯсноПонятно</string>
-    <string name="error_exclamation">ОШИБКА!</string>
-    <string name="error_msg">Не верный запрос!!!</string>
+    <string name="info_button">Close</string>
+    <string name="error_exclamation">Error code</string>
     <string name="err_button">OK</string>
+    <string name="internet_error">Internet Error</string>
 </resources>
