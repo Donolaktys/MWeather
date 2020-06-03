@@ -23,30 +23,25 @@ import ru.donolaktys.mweather.ui.favorite.view.HistoryListFragment;
 public class FavoriteFragment extends Fragment {
     private FavoriteListFragment favoriteListFragment;
     private HistoryListFragment historyListFragment;
-    private FragmentManager fragmentManager;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_favorite, container, false);
         init();
-        addFragment(savedInstanceState, R.id.content_favorite, favoriteListFragment);
-        addFragment(savedInstanceState, R.id.content_history, historyListFragment);
+        replaceFragment(R.id.content_favorite, favoriteListFragment);
+        replaceFragment(R.id.content_history, historyListFragment);
         return root;
     }
 
     private void init() {
-        fragmentManager = getParentFragmentManager();
         favoriteListFragment = new FavoriteListFragment();
         historyListFragment = new HistoryListFragment();
     }
 
-    private void addFragment(Bundle savedInstanceState, int id, Fragment fragment) {
-        if (savedInstanceState == null) {
-            FragmentTransaction fragmentTransaction = fragmentManager
-                    .beginTransaction();
-            fragmentTransaction.add(id, fragment);
+    private void replaceFragment(int id, Fragment fragment) {
+            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+            fragmentTransaction.replace(id, fragment);
             fragmentTransaction.commit();
-        }
     }
 }

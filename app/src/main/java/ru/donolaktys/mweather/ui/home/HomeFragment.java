@@ -151,8 +151,7 @@ public class HomeFragment extends Fragment implements Constants {
     }
 
     private String buildImageUrl(String image) {
-        String url = new OpenWeatherImage(image).build();
-        return url;
+        return new OpenWeatherImage(image).build();
     }
 
     private void initRetrofit() {
