@@ -47,4 +47,8 @@
     <string name="error_exclamation">Error code</string>
     <string name="err_button">OK</string>
     <string name="internet_error">Internet Error</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_add">Add to favorite</string>
+    <string name="menu_clear">Clear history</string>
 </resources>

@@ -155,7 +155,7 @@ public class HomeFragment extends Fragment implements Constants {
     }
 
     private void initRetrofit() {
-        retrofit = MWeather.getRetrofitInstance();
+        retrofit = MWeather.getRetrofit();
         iRequestWeather = retrofit.create(IRequestWeather.class);
     }
 
