@@ -2,7 +2,6 @@ package ru.donolaktys.mweather.ui.home;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,21 +26,23 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import ru.donolaktys.mweather.BuildConfig;
+import ru.donolaktys.mweather.HistoryLogic;
 import ru.donolaktys.mweather.MWeather;
 import ru.donolaktys.mweather.AlertSender;
 import ru.donolaktys.mweather.OpenWeatherImage;
-import ru.donolaktys.mweather.data.SearchHistory;
+import ru.donolaktys.mweather.data.History;
+import ru.donolaktys.mweather.data.RoomHistoryRepository;
 import ru.donolaktys.mweather.data.Weather;
 import ru.donolaktys.mweather.interfaces.Constants;
 import ru.donolaktys.mweather.R;
 import ru.donolaktys.mweather.data.WeatherRequest;
+import ru.donolaktys.mweather.interfaces.IHistoryRepository;
 import ru.donolaktys.mweather.interfaces.IRequestWeather;
 import ru.donolaktys.mweather.ui.home.day_view.OneDayFragment;
 import ru.donolaktys.mweather.ui.home.day_view.ThreeDaysFragment;
@@ -67,10 +68,10 @@ public class HomeFragment extends Fragment implements Constants {
     private Button weekBtn;
     private AppCompatImageView mainConditions;
 
-    private String link;
-
     private IRequestWeather iRequestWeather;
     private Retrofit retrofit;
+
+    private IHistoryRepository repository;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -101,7 +102,6 @@ public class HomeFragment extends Fragment implements Constants {
                         case KeyEvent.KEYCODE_ENTER:
                             requestRetrofit(v.getContext(), Objects.requireNonNull(localityChoice.getText()).toString());
                             hideKeyboardFrom(requireActivity(), v);
-                            SearchHistory.getSearchHistory().add(Objects.requireNonNull(localityChoice.getText()).toString());
                             break;
                     }
                     return true;
@@ -123,9 +123,11 @@ public class HomeFragment extends Fragment implements Constants {
                             float temp = response.body().getMain().getTemp();
                             Weather[] weather = response.body().getWeather();
                             temperature.setText(String.format(Locale.getDefault(), "%d", (int) temp));
+                            String icon = buildImageUrl(weather[0].getIcon());
                             Picasso.get()
-                                    .load(buildImageUrl(weather[0].getIcon()))
+                                    .load(icon)
                                     .into(mainConditions);
+                            addToHistory(city, (int) temp, icon);
                         }
                         if (!response.isSuccessful() && response.errorBody() != null) {
                             try {
@@ -142,6 +144,14 @@ public class HomeFragment extends Fragment implements Constants {
                         }
                     }
 
+                    private void addToHistory(String city, int temp, String icon) {
+                        History history = new History();
+                        history.setCity(city);
+                        history.setImage(icon);
+                        history.setTemperature(String.format(Locale.getDefault(), "%d", temp));
+                        repository.add(history);
+                    }
+
                     @Override
                     public void onFailure(Call<WeatherRequest> call, Throwable t) {
                         localityChoice.getText().clear();
@@ -155,7 +165,7 @@ public class HomeFragment extends Fragment implements Constants {
     }
 
     private void initRetrofit() {
-        retrofit = MWeather.getRetrofit();
+        retrofit = MWeather.getInstance().getRetrofit();
         iRequestWeather = retrofit.create(IRequestWeather.class);
     }
 
@@ -176,11 +186,11 @@ public class HomeFragment extends Fragment implements Constants {
         weekBtn = view.findViewById(R.id.weekBtn);
         dayHighMeasure = view.findViewById(R.id.dayHighMeasure);
         dayLowMeasure = view.findViewById(R.id.dayLowMeasure);
-        link = getActivity().getString(R.string.link);
         daysFragmentManager = getParentFragmentManager();
         oneDayFragment = new OneDayFragment();
         threeDaysFragment = new ThreeDaysFragment();
         weekFragment = new WeekFragment();
+        repository = new RoomHistoryRepository();
     }
 
     private void addFirstFragment(Bundle savedInstanceState) {

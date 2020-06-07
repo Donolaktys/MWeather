@@ -6,15 +6,15 @@ import androidx.room.Room;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.donolaktys.mweather.data.DatabaseFavorite;
+import ru.donolaktys.mweather.data.DatabaseHistory;
 import ru.donolaktys.mweather.interfaces.Constants;
-import ru.donolaktys.mweather.interfaces.FavoriteDao;
+import ru.donolaktys.mweather.interfaces.HistoryDao;
 
 public class MWeather extends Application {
     private static Retrofit retrofit;
     private static MWeather instance;
 
-    private DatabaseFavorite dbf;
+    private DatabaseHistory dbf;
 
     public static MWeather getInstance() {
         return instance;
@@ -41,17 +41,17 @@ public class MWeather extends Application {
     private void buildDB() {
         dbf = Room.databaseBuilder(
                 getApplicationContext(),
-                DatabaseFavorite.class,
+                DatabaseHistory.class,
                 "favorite_database")
                 .allowMainThreadQueries() //Только для примеров и тестирования.
                 .build();
     }
 
-    public FavoriteDao getFavoriteDao() {
-        return dbf.getFavoriteDao();
+    public HistoryDao getHistoryDao() {
+        return dbf.getHistoryDao();
     }
 
-    public static Retrofit getRetrofit() {
+    public Retrofit getRetrofit() {
         return retrofit;
     }
 }

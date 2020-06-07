@@ -9,56 +9,80 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ru.donolaktys.mweather.R;
-import ru.donolaktys.mweather.data.SearchHistory;
+import com.squareup.picasso.Picasso;
 
-public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryHolder> {
+import ru.donolaktys.mweather.OpenWeatherImage;
+import ru.donolaktys.mweather.R;
+import ru.donolaktys.mweather.data.History;
+import ru.donolaktys.mweather.interfaces.AdapterChangeable;
+import ru.donolaktys.mweather.interfaces.IHistoryRepository;
+
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryHolder>
+        implements AdapterChangeable {
+
+    private IHistoryRepository repository;
     private OnMenuItemClickListener itemMenuClickListener;
-    private TextView textItemHistory;
+
+    public HistoryAdapter(IHistoryRepository repository) {
+        this.repository = repository;
+    }
 
     @NonNull
     @Override
     public HistoryHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        int layoutIdForListItem = R.layout.item_history;
+        int layoutIdForListItem = R.layout.item_favorite;
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
-        HistoryAdapter.HistoryHolder viewHolder = new HistoryAdapter.HistoryHolder(view);
+        HistoryHolder viewHolder = new HistoryHolder(view);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull HistoryHolder holder, int position) {
-        holder.bind(position);
+        holder.bind(repository.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return SearchHistory.getSearchHistory().size();
+        return repository.getCount();
     }
 
-    public void setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
+    public void setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener){
         this.itemMenuClickListener = onMenuItemClickListener;
     }
 
     public interface OnMenuItemClickListener {
-        void onItemAddClick(String city);
-
+        void onItemDeleteClick(History history);
         void onItemClearClick();
+    }
+
+    @Override
+    public void notifyDataChange() {
+        notifyDataSetChanged();
     }
 
     class HistoryHolder extends RecyclerView.ViewHolder {
 
+        private TextView textCityHistory;
+        private TextView textTempHistory;
+        private AppCompatImageView imageConditionsFavorite;
+        private History history;
+
+
         public HistoryHolder(@NonNull View itemView) {
             super(itemView);
-            textItemHistory = itemView.findViewById(R.id.textItemHistory);
+            textCityHistory = itemView.findViewById(R.id.textCityHistory);
+            imageConditionsFavorite = itemView.findViewById(R.id.imageConditionsHistory);
+            textTempHistory = itemView.findViewById(R.id.textTempHistory);
 
-            textItemHistory.setOnLongClickListener(new View.OnLongClickListener() {
+            textCityHistory.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     if (itemMenuClickListener != null) {
-                        showPopupMenu(textItemHistory);
+                        showPopupMenu(textCityHistory);
                         return true;
                     }
                     return false;
@@ -66,24 +90,28 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             });
         }
 
-        public void bind(int position) {
-            textItemHistory.setText(SearchHistory.getSearchHistory().get(position));
+        public void bind(History history) {
+            this.history = history;
+            textCityHistory.setText(history.getCity());
+            Picasso.get()
+                    .load(new OpenWeatherImage(history.getImage()).build())
+                    .into(imageConditionsFavorite);
+            textTempHistory.setText(history.getTemperature());
         }
 
         private void showPopupMenu(View view) {
-            // Покажем меню на элементе
+
             PopupMenu popup = new PopupMenu(view.getContext(), view);
             MenuInflater inflater = popup.getMenuInflater();
-            inflater.inflate(R.menu.history_menu, popup.getMenu());
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-                // обработка выбора пункта меню
+            inflater.inflate(R.menu.context_menu, popup.getMenu());
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener(){
+                
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    // делегируем обработку слушателю
+
                     switch (item.getItemId()) {
-                        case R.id.menu_add:
-                            itemMenuClickListener.onItemAddClick(textItemHistory.getText().toString());
+                        case R.id.menu_delete:
+                            itemMenuClickListener.onItemDeleteClick(history);
                             return true;
                         case R.id.menu_clear:
                             itemMenuClickListener.onItemClearClick();

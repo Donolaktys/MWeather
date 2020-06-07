@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class FavoriteCity {
+public class History {
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "CITY")
@@ -47,13 +47,13 @@ public class FavoriteCity {
         this.temperature = temperature;
     }
 
-    public FavoriteCity Copy(String city) {
-        FavoriteCity newFavoriteCity = new FavoriteCity();
-        newFavoriteCity.setTemperature(this.getTemperature());
-        newFavoriteCity.setImage(this.getImage());
-        newFavoriteCity.setCity(city);
-        newFavoriteCity.setId(id);
-        return newFavoriteCity;
+    public History Copy(long id) {
+        History newHistory = new History();
+        newHistory.setTemperature(this.getTemperature());
+        newHistory.setImage(this.getImage());
+        newHistory.setCity(this.getCity());
+        newHistory.setId(id);
+        return newHistory;
     }
 }
 
